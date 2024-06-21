@@ -1,28 +1,39 @@
 ################################################################
-# 
-# 
+# This section defines how the Key9 proxy will interact with 
+# the Key9 API.
 ################################################################
 
 core:
 
-   address: "https://ssh-api.k9.io"
-   runas: "key9"
+   address: "https://ssh-api.k9.io"   # Key9 API
+   runas: "key9"                      # Who to "runas"
 
 ################################################################
-#
-#
+# This section defined how the "proxy" operates.
 ################################################################
 
 proxy:
 
-   # Port needs to be above 1024 to run as a non-root user! 
+   # If you plan on running the proxy on a port below 1024, 
+   # you'll either need to run as "root" or "setcap" the
+   # binary!
 
-   http_listen: ":8080"
+   http_listen: ":8080"   # Port to answer proxy requests on.
+
+   # Enable/disable TLS.  If "http_tls" is set to "false",  then
+   # http_cert and http_key are ignored. 
+
    http_tls: false
    http_cert: "/etc/letsencrypt/live/YOURSITE/fullchain.pem"
    http_key: "/etc/letsencrypt/live/YOURSITE/privkey.pem"
-   http_mode: "release"
-   logs: "/var/log/key9/proxy.log"
-   cache_dir: "/opt/k9/proxy_cache"
 
+   # "http_mode" can be set to "release" (production), "debug"
+   # and "test".
+
+   http_mode: "release"
+
+   # "cache_dir" is the directory location of where to store 
+   # API cached requests.
+
+   cache_dir: "/opt/k9/proxy_cache"
 

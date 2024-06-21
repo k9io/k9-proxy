@@ -37,7 +37,7 @@ Make sure you have Golang installed!
 $ go mod init k9-proxy
 $ go mod tidy
 $ go build
-$ sudo mkdir /opt/k9/etc /opt/k9/bin
+$ sudo mkdir -p /opt/k9/etc /opt/k9/bin
 $ sudo cp etc/k9-proxy.yaml /opt/k9/etc
 $ sudo cp k9-proxy /opt/k9/bin
 $ sudo /opt/k9/bin/k9-proxy 	 # Run from the command line... Control C exits
