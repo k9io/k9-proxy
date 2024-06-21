@@ -113,10 +113,6 @@ func LoadConfig(config_file string) *Configuration {
                 log.Fatalf("Invalid 'http_mode' :  %s.  Valid 'http_modes' are 'release', 'debug' and 'test'\n", Config.Proxy.HTTP_Mode)
 	        }
 
-	if Config.Proxy.Logs == "" {
-		log.Fatalf("'logs' key not found in %s.\n", config_file)
-	}
-
 	if Config.Proxy.Cache_Dir == "" {
 		log.Fatalf("'cache_dir' key not found in %s.\n", config_file)
 	}
