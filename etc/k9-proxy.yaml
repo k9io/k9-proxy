@@ -1,0 +1,21 @@
+#
+#
+
+authentication:
+
+   address: "https://ssh-api.k9.io"
+   runas: "key9"
+
+proxy:
+
+   # Port needs to be above 1024 to run as a non-root user! 
+
+   http_listen: ":8080"
+   http_tls: false
+   http_cert: "/etc/letsencrypt/live/YOURSITE/fullchain.pem"
+   http_key: "/etc/letsencrypt/live/YOURSITE/privkey.pem"
+   http_mode: "release"
+   logs: "/var/log/key9/proxy.log"
+   cache_dir: "/opt/k9/proxy_cache"
+
+
