@@ -1,2 +1,34 @@
-# k9-proxy
-Key9 API Proxy!
+
+Join the Key9 Discord channel
+-----------------------------
+
+[![Discord](./images/slack.png)](https://key9identity.slack.com/)
+
+
+What is they Key9 Proxy?
+------------------------
+
+The Key9 proxy is a simple “caching” proxy for the Key9 API.  It is meant to provide high availability and accessibility to Key9 API users.  It acts as “middleware” to “cache” data between the Key9 API and Key9 users.  In an outage, the proxy can still service users via on-disk cache.
+
+The proxy can be run as a network or host-based proxy.
+
+Use cases:
+----------
+
+Some networks might have restrictions that prohibit machines from accessing the Key API directly.   In those cases,  the Key9 proxy can be used as a centralized API access point for all machines within a restricted network. 
+
+Aa machines within your network make Key9 API requests,  the data is “caches”.   This cache services as a high availability mechanism in that, if the Key9 API is unreachable, data can be retrieved from the cache, thus allowing access to internal resources during the outage
+
+The Key9 Proxy might be used as a local host proxy (cache) in certain situations. 
+
+For example, if a host has unreliable Internet access, the Key9 proxy can keep a local cache of authentication data used by the operating system and SSH public keys.  This data can be refreshed when Internet access is reestablished.
+
+What software uses they Key9 Proxy?
+-----------------------------------
+
+The proxy is used by k9-ssh (public key retrieval) and k9-nss (operating system NSS library)
+
+
+
+
+
