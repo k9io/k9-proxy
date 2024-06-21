@@ -46,7 +46,7 @@ func Process_Key9(c *gin.Context) {
 	client := http.Client{}
 
 	api_key_temp := fmt.Sprintf("%s:%s", c.GetString("company_uuid"), c.GetString("api_key"))
-	url_tmp := fmt.Sprintf("%s%s", Config.Authentication.Address, c.Request.URL.Path)
+	url_tmp := fmt.Sprintf("%s%s", Config.Core.Address, c.Request.URL.Path)
 
 	log.Printf("Proxied request: %s\n", url_tmp) /* Display/log the URL proxied */
 

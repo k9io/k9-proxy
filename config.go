@@ -31,7 +31,7 @@ import (
 /**********************/
 
 type Configuration struct {
-	Authentication struct {
+	Core struct {
 		Address string `yaml:"address"`
 		Runas   string `yaml:"runas"`
 	}
@@ -75,13 +75,13 @@ func LoadConfig(config_file string) *Configuration {
 		log.Fatalf("Cannot parse '%s'.", config_file)
 	}
 
-	/* ---- Sanity Checks ---- Authentication ---- */
+	/* ---- Sanity Checks ---- Core ---- */
 
-	if Config.Authentication.Address == "" {
+	if Config.Core.Address == "" {
 		log.Fatalf("'address' key not found in %s.\n", config_file)
 	}
 
-	if Config.Authentication.Runas == "" {
+	if Config.Core.Runas == "" {
 		log.Fatalf("'runas' key not found in %s.\n", config_file)
 	}
 

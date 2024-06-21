@@ -28,7 +28,23 @@ What software uses they Key9 Proxy?
 
 The proxy is used by k9-ssh (public key retrieval) and k9-nss (operating system NSS library)
 
+Building and installing the Key9 Proxy
+--------------------------------------
 
+Make sure you have Golang installed! 
+
+<pre>
+$ go mod init k9-proxy
+$ go mod tidy
+$ go build
+$ sudo mkdir /opt/k9/etc /opt/k9/bin
+$ sudo cp etc/k9-proxy.yaml /opt/k9/etc
+$ sudo cp k9-proxy /opt/k9/bin
+$ sudo /opt/k9/bin/k9-proxy 	 # Run from the command line... Control C exits
+$ sudo cp k9-proxy.service /etc/systemd/system
+$ sudo systemctl enable k9-proxy
+$ sudo systemctl start k9-proxy
+</pre>
 
 
 

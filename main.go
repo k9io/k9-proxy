@@ -44,7 +44,7 @@ func main() {
 
 	Config := LoadConfig(Config_File)
 
-	DropPrivileges(Config.Authentication.Runas)
+	DropPrivileges(Config.Core.Runas)
 
 	log.Printf("Setting gin to \"%s\" mode.\n", Config.Proxy.HTTP_Mode)
 	gin.SetMode(Config.Proxy.HTTP_Mode) /* 'debug', 'release' or 'test' */

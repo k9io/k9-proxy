@@ -1,0 +1,18 @@
+[Unit]
+Description=Key9 API Proxy
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=root
+ExecStart=/opt/k9/bin/k9-proxy
+Restart=always
+RestartSec=10
+TimeoutStopSec=90
+KillMode=process
+
+OOMScoreAdjust=-900
+SyslogIdentifier=K9-PROXY
+
+[Install]
+WantedBy=multi-user.target
