@@ -64,22 +64,21 @@ func main() {
 	router.GET("/api/v1/query/group/id/:id", Process_Key9)
 	router.GET("/api/v1/query/k9/all_users", Process_Key9)
 
-	log.Printf("Listening traffic on %s.", Config.Proxy.HTTP_Listen)
-
 	/* Non-TLS */
 
 	if Config.Proxy.HTTP_TLS == false { 
 
+		log.Printf("Listening for unencrypted traffic on %s.", Config.Proxy.HTTP_Listen)
 		err = router.Run(Config.Proxy.HTTP_Listen)
 	
 	} else {
 
 	/* TLS */
 
+		log.Printf("Listening for TLS traffic on %s.", Config.Proxy.HTTP_Listen)
 		err = router.RunTLS(Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
 
 	}
-
 
 	if err != nil {
 		

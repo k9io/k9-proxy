@@ -21,7 +21,8 @@ proxy:
    http_listen: ":8080"   # Port to answer proxy requests on.
 
    # Enable/disable TLS.  If "http_tls" is set to "false",  then
-   # http_cert and http_key are ignored. 
+   # http_cert and http_key are ignored. If "http_tls" is true, 
+   # then the cert/key must be readable by the "runas" user!
 
    http_tls: false
    http_cert: "/etc/letsencrypt/live/YOURSITE/fullchain.pem"
