@@ -28,6 +28,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,7 +44,7 @@ func Process_Key9(c *gin.Context) {
 
 	sha1_file := fmt.Sprintf("%s/%x", Config.Proxy.Cache_Dir, sha1.Sum([]byte(c.Request.URL.Path)))
 
-	client := http.Client{}
+	client := http.Client{ Timeout: time.Duration( Config.Core.Connection_Timeout ) * time.Second, }
 
 	api_key_temp := fmt.Sprintf("%s:%s", c.GetString("company_uuid"), c.GetString("api_key"))
 	url_tmp := fmt.Sprintf("%s%s", Config.Core.Address, c.Request.URL.Path)

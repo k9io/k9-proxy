@@ -34,6 +34,7 @@ type Configuration struct {
 	Core struct {
 		Address string `yaml:"address"`
 		Runas   string `yaml:"runas"`
+		Connection_Timeout int `yaml:"connection_timeout"`
 	}
 
 	Proxy struct {
@@ -83,6 +84,12 @@ func LoadConfig(config_file string) *Configuration {
 
 	if Config.Core.Runas == "" {
 		log.Fatalf("'runas' key not found in %s.\n", config_file)
+	}
+
+	/* Set a default timeout */
+
+	if Config.Core.Connection_Timeout == 0 {
+		Config.Core.Connection_Timeout = 5
 	}
 
 	/* ---- Proxy ---- */

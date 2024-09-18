@@ -7,6 +7,7 @@ core:
 
    address: "https://ssh-api.k9.io"   # Key9 API
    runas: "key9"                      # Who to "runas"
+   connection_timeout: 5              # TCP connection timeout
 
 ################################################################
 # This section defined how the "proxy" operates.
