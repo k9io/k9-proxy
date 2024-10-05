@@ -1,4 +1,12 @@
 ################################################################
+# The Key9 proxy is designed to proxy and cache requests to the
+# Key9 SSH API. This proxy can operate as a local caching server
+# or as a network-based caching server. The Key9 proxy can be
+# valuable because even if Key9 is inaccessible, you can still
+# log in using your cached SSH keys.
+################################################################
+
+################################################################
 # This section defines how the Key9 proxy will interact with 
 # the Key9 API.
 ################################################################
@@ -23,7 +31,9 @@ proxy:
 
    # Enable/disable TLS.  If "http_tls" is set to "false",  then
    # http_cert and http_key are ignored. If "http_tls" is true, 
-   # then the cert/key must be readable by the "runas" user!
+   # then the cert/key must be readable by the "runas" user! If 
+   # you are using the Key9 proxy as a local cache, then TLS 
+   # isn't necessary. 
 
    http_tls: false
    http_cert: "/etc/letsencrypt/live/YOURSITE/fullchain.pem"
