@@ -27,7 +27,8 @@ proxy:
    # you'll either need to run as "root" or "setcap" the
    # binary!
 
-   http_listen: ":8080"   # Port to answer proxy requests on.
+   http_listen: "127.0.0.1:8080"  # IP address and port to 
+                                  # listen for request.
 
    # Enable/disable TLS.  If "http_tls" is set to "false",  then
    # http_cert and http_key are ignored. If "http_tls" is true, 
