@@ -46,5 +46,14 @@ $ sudo systemctl enable k9-proxy
 $ sudo systemctl start k9-proxy
 </pre>
 
+Prebuild Key9 proxy binaries
+----------------------------
 
+If you are unable to access a Golang compiler, you can download pre-built/pre-compiled binaries. These binaries are available for various architectures (i386, amd64, arm64, etc) and multiple operating systems (Linux, Solaris, NetBSD, etc).
+
+You can find those binaries at: https://github.com/k9io/k9-binaries/tree/main/k9-proxy
+
+You will need a copy of the 'k9-proxy' configuation file.  That is located at: 
+
+https://github.com/k9io/k9-proxy/blob/main/etc/k9-proxy.yaml
 
