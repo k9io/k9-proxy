@@ -40,7 +40,7 @@ func main() {
 		Config_File = *config_file
 	}
 
-	log.Printf("* Using configuration file - %s\n", Config_File)
+	log.Printf("Using configuration file - %s\n", Config_File)
 
 	Config := LoadConfig(Config_File)
 
