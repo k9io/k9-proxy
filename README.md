@@ -15,7 +15,7 @@ The proxy can be run as a network or host-based proxy.
 Use cases:
 ----------
 
-Some networks might have restrictions that prohibit machines from accessing the Key API directly.   In those cases,  the Key9 proxy can be used as a centralized API access point for all machines within a restricted network. 
+Some networks might have restrictions that prohibit machines from accessing the Key9 API directly.   In those cases,  the Key9 proxy can be used as a centralized API access point for all machines within a restricted network. 
 
 As machines within your network make Key9 API requests,  the data is “caches”.   This cache services as a high availability mechanism in that, if the Key9 API is unreachable, data can be retrieved from the cache, thus allowing access to internal resources during the outage
 
