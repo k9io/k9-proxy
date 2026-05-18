@@ -22,6 +22,7 @@ package main
 
 import (
 	"log"
+	"os"
 	"os/user"
 	"strconv"
 	"syscall"
@@ -52,6 +53,12 @@ func DropPrivileges(userToSwitchTo string) {
 	uid, err := strconv.Atoi(userInfo.Uid)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	// Already running as the target user — nothing to do.
+
+	if os.Getuid() == uid {
+		return
 	}
 
 	// Unset supplementary group IDs.

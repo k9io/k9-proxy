@@ -1,4 +1,4 @@
 #!/bin/bash
 
-env CGO_ENABLED=0 go build -ldflags "-s"
+env CGO_ENABLED=0 go build -trimpath -ldflags "-s"
 

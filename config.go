@@ -43,7 +43,6 @@ type Configuration struct {
 		HTTP_TLS    bool   `yaml:"http_tls"`
 		HTTP_Cert   string `yaml:"http_cert"`
 		HTTP_Key    string `yaml:"http_key"`
-		Logs        string `yaml:"logs"`
 		Cache_Dir   string `yaml:"cache_dir"`
 	}
 }
@@ -68,6 +67,7 @@ func LoadConfig(config_file string) *Configuration {
 
 	/* Init new YAML decode */
 
+	Config = nil
 	d := yaml.NewDecoder(file)
 
 	err = d.Decode(&Config)
@@ -106,7 +106,7 @@ func LoadConfig(config_file string) *Configuration {
 			log.Fatalf("'http_cert' key not found in %s.\n", config_file)
 		}
 
-		if Config.Proxy.HTTP_Cert == "" {
+		if Config.Proxy.HTTP_Key == "" {
 			log.Fatalf("'http_key' key not found in %s.\n", config_file)
 		}
 
@@ -116,9 +116,9 @@ func LoadConfig(config_file string) *Configuration {
 		log.Fatalf("'http_mode' key not found in %s.\n", config_file)
 	}
 
-        if Config.Proxy.HTTP_Mode != "release" && Config.Proxy.HTTP_Mode != "debug" && Config.Proxy.HTTP_Mode != "test" {
-                log.Fatalf("Invalid 'http_mode' :  %s.  Valid 'http_modes' are 'release', 'debug' and 'test'\n", Config.Proxy.HTTP_Mode)
-	        }
+	if Config.Proxy.HTTP_Mode != "release" && Config.Proxy.HTTP_Mode != "debug" && Config.Proxy.HTTP_Mode != "test" {
+		log.Fatalf("Invalid 'http_mode' :  %s.  Valid 'http_modes' are 'release', 'debug' and 'test'\n", Config.Proxy.HTTP_Mode)
+	}
 
 	if Config.Proxy.Cache_Dir == "" {
 		log.Fatalf("'cache_dir' key not found in %s.\n", config_file)

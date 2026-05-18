@@ -14,5 +14,11 @@ KillMode=process
 OOMScoreAdjust=-900
 SyslogIdentifier=K9-PROXY
 
+NoNewPrivileges=yes
+ProtectSystem=strict
+PrivateTmp=yes
+ReadWritePaths=/opt/k9/proxy_cache
+LimitNOFILE=65536
+
 [Install]
 WantedBy=multi-user.target

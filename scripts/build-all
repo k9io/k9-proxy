@@ -11,18 +11,18 @@ EXCLUDE="plan9|ios|android|js"  # Don't build these binaries.
 
 # Get list from Go and exclude certain builds
 
-go tool dist list | grep -vE $EXCLUDE | while read IN
-do 
+go tool dist list | grep -vE "$EXCLUDE" | while read -r IN
+do
 
-	OS=`echo $IN | cut -f1 -d'/'`
-	ARCH=`echo $IN | cut -f2 -d'/'`
+	OS=$(echo "$IN" | cut -f1 -d'/')
+	ARCH=$(echo "$IN" | cut -f2 -d'/')
 
 	echo -n "Building for $OS [$ARCH]: "
 
-	mkdir -p bin/$OS 2> /dev/null 
+	mkdir -p bin/$OS 2> /dev/null
 
-	echo -n "*"	
-	env CGO_ENABLED=0 GOOS=$OS GOARCH=$ARCH go build -o bin/$OS/$K9_UTIL.$ARCH -ldflags "-s"
+	echo -n "*"
+	env CGO_ENABLED=0 GOOS=$OS GOARCH=$ARCH go build -trimpath -o bin/$OS/$K9_UTIL.$ARCH -ldflags "-s"
 
 	echo -n "*"
 	gzip -9 bin/$OS/$K9_UTIL.$ARCH
@@ -30,6 +30,6 @@ do
 	echo -n "*"
 	sha256sum bin/$OS/$K9_UTIL.$ARCH.gz | cut -d' ' -f1 > bin/$OS/$K9_UTIL.$ARCH.gz-sha256.txt
 
-	echo 
+	echo
 
 done

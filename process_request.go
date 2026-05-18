@@ -22,9 +22,9 @@ package main
 
 import (
 	"bytes"
-	"crypto/sha1"
+	"crypto/sha256"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"strings"
@@ -33,140 +33,77 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// serveFromCache validates the API key against the local cache and, if valid,
+// returns the cached response body. Used when the upstream Key9 API is unreachable.
+func serveFromCache(c *gin.Context, apiKey, cacheFile string) {
+	if !Cache_Authenticate_API(apiKey) {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "api authentication failure [Key9 Proxy]"})
+		c.Abort()
+		return
+	}
+	log.Printf("Pulling authentication from cache.\n")
+	cacheBody, ok := Read_Cache(cacheFile)
+	if !ok {
+		c.JSON(http.StatusBadGateway, gin.H{"error": "Can't pull data from proxy cache"})
+		c.Abort()
+		return
+	}
+	c.Data(http.StatusOK, "application/json", []byte(cacheBody))
+	log.Printf("Key9 API unavailable, serving cache %s\n", cacheFile)
+}
+
 func Process_Key9(c *gin.Context) {
 
-	var cache_body string
-	var cache_ret bool
+	cacheFile := fmt.Sprintf("%s/%x", Config.Proxy.Cache_Dir, sha256.Sum256([]byte(c.Request.URL.RequestURI())))
+
+	client := http.Client{Timeout: time.Duration(Config.Core.Connection_Timeout) * time.Second}
+
+	apiKey := fmt.Sprintf("%s:%s", c.GetString("company_uuid"), c.GetString("api_key"))
+	urlTmp := fmt.Sprintf("%s%s", Config.Core.Address, c.Request.URL.RequestURI())
+
+	log.Printf("Proxied request: %s\n", urlTmp)
 
 	var req *http.Request
 	var err error
-	var jsondata []uint8
-
-	sha1_file := fmt.Sprintf("%s/%x", Config.Proxy.Cache_Dir, sha1.Sum([]byte(c.Request.URL.Path)))
-
-	client := http.Client{ Timeout: time.Duration( Config.Core.Connection_Timeout ) * time.Second, }
-
-	api_key_temp := fmt.Sprintf("%s:%s", c.GetString("company_uuid"), c.GetString("api_key"))
-	url_tmp := fmt.Sprintf("%s%s", Config.Core.Address, c.Request.URL.Path)
-
-	log.Printf("Proxied request: %s\n", url_tmp) /* Display/log the URL proxied */
-
-	/* Determine if this is a GET or POST request.  POST is used to pass the "remote"
-	   IP addresses.   This is used with Geolocks */
 
 	if c.Request.Method == "GET" {
-
-		req, err = http.NewRequest("GET", url_tmp, nil)
-
+		req, err = http.NewRequest("GET", urlTmp, nil)
 	} else {
-
-		jsondata, _ = c.GetRawData()
-		req, err = http.NewRequest("POST", url_tmp, bytes.NewBuffer(jsondata))
-
+		var postBody []byte
+		postBody, err = c.GetRawData()
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to read request body"})
+			c.Abort()
+			return
+		}
+		req, err = http.NewRequest("POST", urlTmp, bytes.NewBuffer(postBody))
 	}
 
 	if err != nil {
-		c.JSON(http.StatusOK, gin.H{"error": "Can't pull data from proxy cache [http.NewRequest]"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to build upstream request"})
 		c.Abort()
 		return
 	}
 
-	req.Header["API_KEY"] = []string{api_key_temp}
+	req.Header["API_KEY"] = []string{apiKey}
 
 	res, err := client.Do(req)
-
-	/* If the requests fails,  we pull data from cache.  'Fail' means a connection cannot
-	   be established to the webserver,  not an authentication issue */
-
 	if err != nil {
-
-		/* Request has failed,  pull API key from cache and validate and authenticate */
-
-		if Cache_Authenticate_API(api_key_temp) == true {
-
-			log.Printf("Pulling authentication from cache.\n")
-
-			cache_body, cache_ret = Read_Cache(sha1_file)
-
-			/* We pull the API keys from cache.  This means that in the past, the proxy has
-			   to have made a valid/authenticated connection to the Key9 API!  If it hasn't
-			   ( cache_ret == false ),  there is nothing we can do.  */
-
-			if cache_ret == true {
-
-				c.Data(http.StatusOK, "application/json", []byte(cache_body))
-				log.Printf("Error pulling from Key9 API [client.Do],  using cache %s\n", sha1_file)
-				return
-
-			} else {
-
-				c.JSON(http.StatusOK, gin.H{"error": "Can't pull data from proxy cache [client.Do]"})
-				c.Abort()
-				return
-
-			}
-
-		} else {
-
-			/* Authentication doesn't match up from cache and the client */
-
-			c.JSON(http.StatusOK, gin.H{"error": "api authentication failure [Key9 Proxy]"})
-			c.Abort()
-			return
-		}
-
+		serveFromCache(c, apiKey, cacheFile)
+		return
 	}
+	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(res.Body)
-
+	responseBody, err := io.ReadAll(res.Body)
 	if err != nil {
-
-		/* If the connect was establish but it isn't possible to read the body,  we pull from cache
-		   data */
-
-		if Cache_Authenticate_API(api_key_temp) == true {
-
-			log.Printf("Pulling authentication from cache.\n")
-
-			cache_body, cache_ret = Read_Cache(sha1_file)
-
-			if cache_ret == true {
-
-				c.Data(http.StatusOK, "application/json", []byte(cache_body))
-				log.Printf("Error pulling from Key9 API [client.Do],  using cache %s\n", sha1_file)
-				return
-
-			} else {
-
-				c.JSON(http.StatusOK, gin.H{"error": "Can't pull data from proxy cache [client.Do]"})
-				c.Abort()
-				return
-
-			}
-
-		} else {
-
-			c.JSON(http.StatusOK, gin.H{"error": "api authentication failure [Key9 Proxy]"})
-			c.Abort()
-			return
-		}
-
+		serveFromCache(c, apiKey, cacheFile)
+		return
 	}
 
-	/* Cache API creds if there isn't an error */
-
-	if strings.Contains(string(body), "\"error\":") == false {
-
-		api_file_temp := fmt.Sprintf("%s/api.cache", Config.Proxy.Cache_Dir)
-		Write_Cache(api_file_temp, api_key_temp)
+	if !strings.Contains(string(responseBody), "\"error\":") {
+		Write_Cache(fmt.Sprintf("%s/api.cache", Config.Proxy.Cache_Dir), apiKey)
 	}
 
-	/* Send data to the client */
-
-	c.Data(http.StatusOK, "application/json", body)
-
-	/* Write cache of whatever we have looked up */
-
-	Write_Cache(sha1_file, string(body))
-
+	c.Data(http.StatusOK, "application/json", responseBody)
+	Write_Cache(cacheFile, string(responseBody))
 }

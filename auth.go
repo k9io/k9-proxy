@@ -21,11 +21,12 @@
 package main
 
 import (
-	"bytes"
+	"crypto/subtle"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 /***************************************************************************/
@@ -38,17 +39,15 @@ func Authenticate_API() gin.HandlerFunc {
 		api_key := c.GetHeader("API_KEY")
 
 		if api_key == "" {
-			c.JSON(http.StatusOK, gin.H{"error": "api authentication failed"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "api authentication failed"})
 			c.Abort()
 			return
 		}
 
-		temp_value := strings.Split(api_key, ":")
-
-		/* Validate the string properly split */
+		temp_value := strings.SplitN(api_key, ":", 2)
 
 		if len(temp_value) != 2 {
-			c.JSON(http.StatusOK, gin.H{"error": "api authentication failed"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "api authentication failed"})
 			c.Abort()
 			return
 		}
@@ -74,9 +73,5 @@ func Cache_Authenticate_API(api_key string) bool {
 		return false
 	}
 
-	if bytes.Equal([]byte(api_key[:]), []byte(api_cache_data[:])) {
-		return true
-	}
-
-	return false
+	return subtle.ConstantTimeCompare([]byte(api_key), []byte(api_cache_data)) == 1
 }

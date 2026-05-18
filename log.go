@@ -33,10 +33,15 @@ import (
 
 func HTTP_Logger() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
-		clientIP := c.ClientIP()
-		now := time.Now()
-		log.Printf("[%s] %s %s %s", now.Format(time.RFC3339), c.Request.Method, c.Request.URL.Path, clientIP)
+		start := time.Now()
 		c.Next()
+		log.Printf("[%s] %s %s %s %d %s",
+			start.Format(time.RFC3339),
+			c.Request.Method,
+			c.Request.URL.Path,
+			c.ClientIP(),
+			c.Writer.Status(),
+			time.Since(start),
+		)
 	}
 }

@@ -49,7 +49,8 @@ func main() {
 	log.Printf("Setting gin to \"%s\" mode.\n", Config.Proxy.HTTP_Mode)
 	gin.SetMode(Config.Proxy.HTTP_Mode) /* 'debug', 'release' or 'test' */
 
-	router := gin.Default()
+	router := gin.New()
+	router.Use(gin.Recovery())
 	router.Use(HTTP_Logger())
 
 	router.Use(Authenticate_API())
@@ -88,7 +89,7 @@ func main() {
 
 		} else { 
 
-		log.Fatalf("Cannot bind it %s or cannot open %s or %s.\n", Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
+		log.Fatalf("Cannot bind to %s or cannot open %s or %s.\n", Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
 
 		}
 
