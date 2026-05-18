@@ -34,8 +34,6 @@ Building and installing the Key9 Proxy
 Make sure you have Golang installed! 
 
 <pre>
-$ go mod init k9-proxy
-$ go mod tidy
 $ go build
 $ sudo mkdir -p /opt/k9/etc /opt/k9/bin
 $ sudo cp etc/k9-proxy.yaml /opt/k9/etc
