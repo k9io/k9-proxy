@@ -32,9 +32,9 @@ import (
 
 type Configuration struct {
 	Core struct {
-		Address string `yaml:"address"`
-		Runas   string `yaml:"runas"`
-		Connection_Timeout int `yaml:"connection_timeout"`
+		Address            string `yaml:"address"`
+		Runas              string `yaml:"runas"`
+		Connection_Timeout int    `yaml:"connection_timeout"`
 	}
 
 	Proxy struct {

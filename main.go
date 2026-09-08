@@ -67,14 +67,14 @@ func main() {
 
 	/* Non-TLS */
 
-	if Config.Proxy.HTTP_TLS == false { 
+	if Config.Proxy.HTTP_TLS == false {
 
 		log.Printf("Listening for unencrypted traffic on %s.", Config.Proxy.HTTP_Listen)
 		err = router.Run(Config.Proxy.HTTP_Listen)
-	
+
 	} else {
 
-	/* TLS */
+		/* TLS */
 
 		log.Printf("Listening for TLS traffic on %s.", Config.Proxy.HTTP_Listen)
 		err = router.RunTLS(Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
@@ -82,14 +82,14 @@ func main() {
 	}
 
 	if err != nil {
-		
+
 		if Config.Proxy.HTTP_TLS == false {
 
-		log.Fatalf("Cannot bind to %s", Config.Proxy.HTTP_Listen)
+			log.Fatalf("Cannot bind to %s", Config.Proxy.HTTP_Listen)
 
-		} else { 
+		} else {
 
-		log.Fatalf("Cannot bind to %s or cannot open %s or %s.\n", Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
+			log.Fatalf("Cannot bind to %s or cannot open %s or %s.\n", Config.Proxy.HTTP_Listen, Config.Proxy.HTTP_Cert, Config.Proxy.HTTP_Key)
 
 		}
 

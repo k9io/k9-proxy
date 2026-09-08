@@ -39,7 +39,7 @@ func Write_Cache(cacheFile string, body string) {
 
 	if strings.Contains(body, "\"error\":") {
 
-		log.Printf("Key9 API returned an error, not caching: %s\n", string(body) )
+		log.Printf("Key9 API returned an error, not caching: %s\n", string(body))
 		return
 
 	}
